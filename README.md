@@ -2,6 +2,22 @@
 
 Emulate Raspbian on QEMU with ARMv7 using Buildroot to configure your kernel.
 
+## TL;DR
+
+Use the Shell scripts at root (you may need to enable execution with `chmod +x <script>.sh`). Details of what's happening in these scripts are in sections below.
+
+- To download and build files, run the following script:
+
+```
+./download_and_build.sh
+```
+
+- To run Raspbian on QEMU using created files, run the following script:
+
+```
+./run_raspbian_on_qemu.sh
+```
+
 ## Download and build files
 
 Download and unzip the image of Raspbian:
@@ -42,7 +58,7 @@ qemu-system-arm \
         -m 256 \
         -kernel vexpress/zImage \
         -dtb vexpress/vexpress-v2p-ca9.dtb \
-        -sd raspbian-stretch.img \
+        -sd 2018-11-13-raspbian-stretch.img \
         -append "console=ttyAMA0,115200 root=/dev/mmcblk0p2" \
         -serial stdio \
         -net nic -net user,hostfwd=tcp::2222-:22
