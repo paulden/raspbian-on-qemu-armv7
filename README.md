@@ -20,11 +20,11 @@ Use the Shell scripts at root (you may need to enable execution with `chmod +x <
 
 ## Download and build files
 
-Download and unzip the image of Raspbian:
+Download and unzip the image of Raspbian (the version fetched here is the `lite`, you may switch to what you need):
 
 ```
-wget http://downloads.raspberrypi.org/raspbian/images/raspbian-2018-11-15/2018-11-13-raspbian-stretch.zip
-unzip 2018-11-13-raspbian-stretch.zip
+wget http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2018-11-15/2018-11-13-raspbian-stretch-lite.zip
+unzip 2018-11-13-raspbian-stretch-lite.zip
 ```
 
 Download and untar Buildroot package:
