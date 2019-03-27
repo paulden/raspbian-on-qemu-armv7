@@ -1,0 +1,60 @@
+# Raspbian on QEMU with ARMv7
+
+Emulate Raspbian on QEMU with ARMv7 using Buildroot to configure your kernel.
+
+## Download and build files
+
+Download and unzip the image of Raspbian:
+
+```
+wget http://downloads.raspberrypi.org/raspbian/images/raspbian-2018-11-15/2018-11-13-raspbian-stretch.zip
+unzip 2018-11-13-raspbian-stretch.zip
+```
+
+Download and untar Buildroot package:
+
+```
+wget http://www.buildroot.org/downloads/buildroot-2019.02.tar.bz2
+tar xf buildroot-2019.02.tar.bz2
+```
+
+Set Buildroot configuration file to build QEMU ARM using V-Express and start:
+
+```
+cd buildroot-2019.02/
+make qemu_arm_vexpress_defconfig
+make
+```
+
+Output files are located in the `output/images` folder. 
+This will create default `rootfs`, the kernel to be used `zImage` and the DTB `vexpress-v2p-ca9.dtb`.
+
+You now have everything needed to start Raspbian on QEMU.
+
+
+## Start Raspbian on QEMU
+
+Install QEMU if needed an run the following command (if needed, adapt the path to local files):
+
+```
+qemu-system-arm \
+        -M vexpress-a9 \
+        -m 256 \
+        -kernel vexpress/zImage \
+        -dtb vexpress/vexpress-v2p-ca9.dtb \
+        -sd raspbian-stretch.img \
+        -append "console=ttyAMA0,115200 root=/dev/mmcblk0p2" \
+        -serial stdio \
+        -net nic -net user,hostfwd=tcp::2222-:22
+```
+
+If everything went well, Raspbian should boot (default username and password of Raspbian are `pi` and `raspberry` respectively).
+
+You may enable SSH using `sudo raspi-config` from Raspbian, go to `Interfacing Options`, `SSH` and select `<Yes>`.
+After that, you may access your emulated Raspbian machine using SSH from your local OS:
+
+```
+ssh -p 2222 pi@localhost
+```
+
+Password is required to establish connection.
