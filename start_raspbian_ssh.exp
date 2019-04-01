@@ -1,0 +1,29 @@
+#!/usr/bin/expect -f
+
+# Start process
+spawn ./run_raspbian_on_qemu.sh
+
+# Login using default credentials
+set timeout 60
+expect -exact "raspberrypi login: \r\r"
+send "pi\r"
+expect "Password: "
+send "raspberry\r"
+
+# Update default password
+expect "pi@raspberrypi:~$ "
+send "passwd\r"
+expect "(current) UNIX password: "
+send "raspberry\r"
+expect "Enter new UNIX password: "
+send "anewpassword\r"
+expect "Retype new UNIX password: "
+send "anewpassword\r"
+
+# Enable SSH
+expect "pi@raspberrypi:~$ "
+send "sudo systemctl enable ssh\r"
+
+# TODO: Leave machine on until configuration is finished
+set timeout 10000
+expect "To be determined"
