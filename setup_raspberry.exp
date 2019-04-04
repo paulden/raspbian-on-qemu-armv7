@@ -1,0 +1,36 @@
+#!/usr/bin/expect -f
+
+# Set variables 
+set password [lindex $argv 0];
+
+# Start process
+spawn qemu-system-arm \
+        -M vexpress-a9 \
+        -display none \
+	-m 1024 \
+        -kernel qemu_files/zImage \
+        -dtb qemu_files/vexpress-v2p-ca9.dtb \
+        -sd qemu_files/2018-11-13-raspbian-stretch-lite.img \
+        -append "console=ttyAMA0,115200 root=/dev/mmcblk0p2" \
+        -serial stdio \
+        -net nic -net user,hostfwd=tcp::2222-:22 
+# Login using default credentials
+set timeout 60
+expect -exact "raspberrypi login: \r\r"
+send "pi\r"
+expect "Password: "
+send "raspberry\r"
+
+# Update default password
+expect "pi@raspberrypi:~$ "
+send "passwd\r"
+expect "(current) UNIX password: "
+send "raspberry\r"
+expect "Enter new UNIX password: "
+send "$password\r"
+expect "Retype new UNIX password: "
+send "$password\r"
+
+# Enable SSH
+expect "pi@raspberrypi:~$ "
+send "sudo systemctl enable ssh\r"

@@ -14,13 +14,23 @@ gcc
 g++
 python
 unzip
+
+- Install QEMU : 
+
+```
+sudo apt-get install qemu-kvm qemu virt-manager virt-viewer libvirt-bin
 ```
 
-
-- To download and build files, run the following script:
+- To download and build files, run the following script (takes roughly 40 minutes):
 
 ```
 ./download_and_build.sh
+```
+
+- To configure Pi Image with what you want, first install expect with your favorite packet manager
+
+```
+expect
 ```
 
 - To run Raspbian on QEMU using created files, run the following script:
@@ -28,6 +38,7 @@ unzip
 ```
 ./run_raspbian_on_qemu.sh
 ```
+
 
 ## Download and build files
 
