@@ -6,6 +6,17 @@ Emulate Raspbian on QEMU with ARMv7 using Buildroot to configure your kernel.
 
 Use the Shell scripts at root (you may need to enable execution with `chmod +x <script>.sh`). Details of what's happening in these scripts are in sections below.
 
+- Dependencies to install with your favorite package manager :
+
+```
+make
+gcc
+g++
+python
+unzip
+```
+
+
 - To download and build files, run the following script:
 
 ```
