@@ -1,6 +1,6 @@
 # Raspbian on QEMU with ARMv7
 
-Emulate Raspbian on QEMU with ARMv7 using Buildroot to configure your kernel.
+Emulate Raspbian on QEMU with ARMv7 using Buildroot to configure your kernel and set a Python environment to run scripts using Keras on Tensorflow.
 
 ## TL;DR
 
