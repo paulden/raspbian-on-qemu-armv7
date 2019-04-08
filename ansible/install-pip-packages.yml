@@ -1,0 +1,58 @@
+- hosts: raspberry
+
+  vars:
+    python_path: "/usr/local/bin/python3.6"
+    home: "/home/pi"
+
+  tasks:
+    - name: "Install dependencies required for Python packages"
+      become: yes
+      apt:
+        name: ["libjpeg62",
+               "libjpeg62-dev",
+               "zlib1g-dev",
+               "libfreetype6-dev",
+               "liblcms1-dev",
+               "libopenjp2-7"]
+
+    # This package cannot be installed at the same time as previous ones for dependency reasons
+    - name: "Install dependencies required for Python packages"
+      become: yes
+      apt:
+        name: "libtiff5"
+
+    # Python 2 setuptools is necessary to run Ansible pip tasks
+    # TODO: check is chaning ansible_python_interpreter to Python3 does not break anything and switch
+    - name: "Install pip and virtualenv to manage Python packages"
+      become: yes
+      apt:
+        name: ["python3-pip",
+               "python3-venv",
+               "python-setuptools"]
+
+    - name: "Create directory for source code"  # TODO: clone actual repository containing source code
+      file:
+        path: "{{ home }}/code"
+        state: directory
+
+    # TODO: check if necessary (Ansible pip module should do the job)
+    - name: "Creation of virtual environment"
+      shell: "{{ python_path }} -m venv {{ home }}/code/venv"
+
+    - name: "Install pip packages"
+      pip:
+        name:
+          - keras==2.2.4
+          - pillow
+        virtualenv: "{{ home }}/code/venv"
+
+    - name: "Retrieve Tensorflow on ARM wheel"
+      get_url:
+        url: "https://github.com/lhelontra/tensorflow-on-arm/releases/download/v1.13.1/tensorflow-1.13.1-cp35-none-linux_armv7l.whl"
+        dest: "/tmp/"
+
+    - name: "Install Tensorflow package using wheel"
+      pip:
+        name: "/tmp/tensorflow-1.13.1-cp35-none-linux_armv7l.whl"
+        virtualenv: "{{ home }}/code/venv"
+        virtualenv_python: "{{ python_path }}"
