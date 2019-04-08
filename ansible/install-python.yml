@@ -1,0 +1,65 @@
+- hosts: raspberry
+
+  vars:
+    version: 3.6.5
+    threads: 4
+
+  tasks:
+    - name: "Update cache of apt repositories"
+      become: true
+      apt:
+        update_cache: yes
+
+    - name: "Upgrade apt packages"
+      become: true
+      apt:
+        upgrade: yes
+
+    - name: "Install dependencies required to build Python {{version}}"
+      become: yes
+      apt:
+        name: ['build-essential',
+               'tk-dev',
+               'libncurses5-dev',
+               'libncursesw5-dev',
+               'libreadline6-dev',
+               'libdb5.3-dev',
+               'libgdbm-dev',
+               'libsqlite3-dev',
+               'libssl-dev',
+               'libbz2-dev',
+               'libexpat1-dev',
+               'liblzma-dev',
+               'zlib1g-dev',
+               'libffi-dev']
+
+    - name: "Download Python {{version}}"
+      get_url:
+        url: "https://www.python.org/ftp/python/{{version}}/Python-{{version}}.tar.xz"
+        dest: "/tmp/Python-{{version}}.tar.xz"
+
+    - name: "Unarchive Python {{version}}"
+      unarchive:
+        src: "/tmp/Python-{{version}}.tar.xz"
+        dest: "/tmp/"
+        copy: no
+        creates: "/tmp/Python-{{version}}"
+
+    - name: "Configure Python {{version}} build"
+      command: ./configure
+      args:
+        chdir: "/tmp/Python-{{version}}"
+        creates: "/tmp/Python-{{version}}/Makefile"
+
+    - name: "Build Python {{version}}"
+      # not using make module to be able to use -j and creates option to fully skip step
+      command: make -j{{threads}}
+      args:
+        chdir: "/tmp/Python-{{version}}"
+        creates: "/tmp/Python-{{version}}/python"
+
+    - name: "Install Python {{version}}"
+      become: yes
+      make:
+        chdir: "/tmp/Python-{{version}}"
+        target: altinstall

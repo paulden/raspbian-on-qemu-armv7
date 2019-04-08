@@ -2,7 +2,8 @@
 
 qemu-system-arm \
         -M vexpress-a9 \
-        -m 256 \
+        -m 1024 \
+        -smp 4 \
         -kernel qemu_files/zImage \
         -dtb qemu_files/vexpress-v2p-ca9.dtb \
         -sd qemu_files/2018-11-13-raspbian-stretch-lite.img \

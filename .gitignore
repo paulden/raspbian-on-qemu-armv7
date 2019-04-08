@@ -1,1 +1,9 @@
+# Dist files
 qemu_files/*
+
+# IDE related files
+.idea/
+
+# Ansible related files
+*.retry
+

@@ -1,0 +1,2 @@
+[raspbian]
+raspberry ansible_host=localhost ansible_port=2222 ansible_user=pi ansible_ssh_pass=anewpassword ansible_connection=ssh host_key_checking=false

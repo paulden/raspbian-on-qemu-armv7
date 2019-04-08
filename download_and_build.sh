@@ -2,7 +2,7 @@
 
 mkdir qemu_files
 
-wget http://downloads.raspberrypi.org/raspbian/images/raspbian-2018-11-15/2018-11-13-raspbian-stretch-lite.zip
+wget http://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2018-11-15/2018-11-13-raspbian-stretch-lite.zip
 unzip 2018-11-13-raspbian-stretch-lite.zip -d qemu_files
 rm 2018-11-13-raspbian-stretch-lite.zip
 
