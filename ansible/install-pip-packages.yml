@@ -1,58 +1,56 @@
+---
 - hosts: raspberry
 
-  vars:
-    python_path: "/usr/local/bin/python3.6"
-    home: "/home/pi"
-
   tasks:
-    - name: "Install dependencies required for Python packages"
+
+    - name: "Install dependencies required for python packages"
       become: yes
       apt:
-        name: ["libjpeg62",
-               "libjpeg62-dev",
-               "zlib1g-dev",
-               "libfreetype6-dev",
-               "liblcms1-dev",
-               "libopenjp2-7"]
+        name: ["python-setuptools",
+               "python3-setuptools",
+               "python3-numpy",
+               "libblas-dev",
+               "liblapack-dev",
+               "python3-dev",
+               "libatlas-base-dev",
+               "gfortran",
+               "python3-scipy",
+               "python3-dev",
+               "python3-pip"]
+        update_cache: yes
 
-    # This package cannot be installed at the same time as previous ones for dependency reasons
-    - name: "Install dependencies required for Python packages"
-      become: yes
-      apt:
-        name: "libtiff5"
-
-    # Python 2 setuptools is necessary to run Ansible pip tasks
-    # TODO: check is chaning ansible_python_interpreter to Python3 does not break anything and switch
-    - name: "Install pip and virtualenv to manage Python packages"
-      become: yes
-      apt:
-        name: ["python3-pip",
-               "python3-venv",
-               "python-setuptools"]
-
-    - name: "Create directory for source code"  # TODO: clone actual repository containing source code
+    - name: Clean artifact path
       file:
-        path: "{{ home }}/code"
-        state: directory
-
-    # TODO: check if necessary (Ansible pip module should do the job)
-    - name: "Creation of virtual environment"
-      shell: "{{ python_path }} -m venv {{ home }}/code/venv"
-
-    - name: "Install pip packages"
-      pip:
-        name:
-          - keras==2.2.4
-          - pillow
-        virtualenv: "{{ home }}/code/venv"
+        state: absent
+        path: "/tmp/tensorflow-1.12.0-cp35-none-linux_armv7l.whl"
 
     - name: "Retrieve Tensorflow on ARM wheel"
       get_url:
         url: "https://github.com/lhelontra/tensorflow-on-arm/releases/download/v1.12.0/tensorflow-1.12.0-cp35-none-linux_armv7l.whl"
-        dest: "/tmp/"
+        dest: "/tmp"
 
-    - name: "Install Tensorflow package using wheel"
+    - name: "Install tensorflow package using wheel"
+      become: yes
       pip:
-        name: "/tmp/tensorflow-1.13.1-cp35-none-linux_armv7l.whl"
-        virtualenv: "{{ home }}/code/venv"
-        virtualenv_python: "{{ python_path }}"
+        name: "file:///tmp/tensorflow-1.12.0-cp35-none-linux_armv7l.whl"
+        executable: /usr/bin/pip3
+
+    - name: "Install additional dependencies required for keras packages (sequential dependencies)"
+      become: yes
+      apt:
+        name: python3-h5py
+
+
+    - name: "Install keras package"
+      become: yes
+      pip:
+        name: keras
+        executable: /usr/bin/pip3
+        version: 2.2.4
+
+
+    - name: "Install Pillow package"
+      become: yes
+      pip:
+        name: pillow
+        executable: /usr/bin/pip3
