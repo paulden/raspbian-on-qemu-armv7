@@ -74,3 +74,49 @@ ssh -p 2222 pi@localhost
 ```
 
 Password is required to establish connection.
+
+## Resize Pi's filesystem
+On the host, run 
+```
+qemu-img resize <image_name>.img +<size>G
+```
+Then, on the PI, run 
+```
+sudo fdisk /dev/mmcblk0
+```
+
+fdisk is in interactive mode by default. Run sequentially : 
+```
+>p  #Get the first segment for /dev/mmcblk0p2 (probably 98304)
+>d
+>2
+>n
+>2
+>p
+>98304
+>w
+```
+then reboot the pi
+```
+sudo reboot -h now
+```
+then, on the pi, run 
+```
+sudo resize2fs /dev/mmcblk0p2
+```
+Now your Pi has more space on filesystem
+
+## Ansible
+
+Be careful to update the file ```ansible/inventories/hosts ``` with the right password for the pi.
+To launch playbooks, at the root of the project, run
+```
+ansible-playbook -i ansible/inventories ansible/<name_of_playbook.yml>
+```
+You need to first connect to the pi through ssh
+
+## Integration test 
+Copy the files in ```data_for_integration_test``` on the pi (scp for example)
+Copy the image in ```qemu_files``` you want to boot on the pi (with dd for example)
+Boot the Pi
+Run the code, with python3 interpreter, in ```snippet_integration.py```. Please be careful with paths for model and images
