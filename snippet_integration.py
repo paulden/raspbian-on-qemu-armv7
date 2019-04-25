@@ -12,7 +12,8 @@ img_not_car = Image.open('/path/to/not_car.jpg')
 img_not_car_array = np.array(img_car).reshape((1, 128, 128, 3))
 
 # Should output 0
-print(model.precit_classes(img_car_array))
+print(model.predict_classes(img_car_array))
 
 # Should output 1
-print(model.precit_classes(img_not_car_array))
+print(model.predict_classes(img_not_car_array))
+

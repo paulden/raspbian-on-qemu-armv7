@@ -2,6 +2,19 @@
 - hosts: raspberry
 
   tasks:
+    - name: Change mirror source
+      become: true
+      lineinfile:
+        path: /etc/apt/sources.list
+        regexp: '^deb http:\/\/.* stretch main contrib non-free rpi'
+        line: 'deb http://mirror.ox.ac.uk/sites/archive.raspbian.org/archive/raspbian stretch main contrib non-free rpi'
+
+    - name: Update and upgrade apt packages
+      become: true
+      apt:
+       upgrade: yes
+       update_cache: yes
+       cache_valid_time: 86400
 
     - name: "Install dependencies required for python packages"
       become: yes
@@ -17,7 +30,6 @@
                "python3-scipy",
                "python3-dev",
                "python3-pip"]
-        update_cache: yes
 
     - name: Clean artifact path
       file:
@@ -27,7 +39,7 @@
     - name: "Retrieve Tensorflow on ARM wheel"
       get_url:
         url: "https://github.com/lhelontra/tensorflow-on-arm/releases/download/v1.12.0/tensorflow-1.12.0-cp35-none-linux_armv7l.whl"
-        dest: "/tmp"
+        dest: "/tmp/"
 
     - name: "Install tensorflow package using wheel"
       become: yes
@@ -49,8 +61,11 @@
         version: 2.2.4
 
 
-    - name: "Install Pillow package"
+    - name: "Install other python packages"
       become: yes
       pip:
-        name: pillow
+        name: ["pillow",
+               "matplotlib",
+               "jupyter"]
         executable: /usr/bin/pip3
+

@@ -7,3 +7,6 @@ qemu_files/*
 # Ansible related files
 *.retry
 
+
+# Welcome to mac
+.DS_Store
